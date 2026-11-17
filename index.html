@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<title>Семейный микс — Путешествие по Казахстану</title>
+<meta name="description" content="Семейная игра: карта Казахстана, кубик и викторина. Играйте с разных телефонов по коду комнаты.">
+<meta name="theme-color" content="#2b9be0">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Семейный микс">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="app">
+  <header id="topbar">
+    <button class="icon-btn" id="btnHome" title="На главную" aria-label="На главную">🏠</button>
+    <div id="topTitle">Семейный микс</div>
+    <span id="netPill" class="pill hidden">📶 …</span>
+    <button class="icon-btn" id="btnMute" title="Звук" aria-label="Звук">🔊</button>
+  </header>
+
+  <!-- ГЛАВНАЯ -->
+  <section id="scrHome" class="screen">
+    <div class="logo">
+      <div class="sun" id="logoSun" title="☀️">☀️</div>
+      <h1>Семейный<br>микс</h1>
+      <div class="subtitle">Путешествие по Казахстану 🇰🇿</div>
+      <div class="flag-strip"><span>🏙️</span><span>🍎</span><span>🚀</span><span>🕌</span><span>🌊</span><span>🌲</span></div>
+    </div>
+    <div class="stack">
+      <button class="big-btn green" id="btnCreate">🎲 Создать комнату</button>
+      <button class="big-btn blue" id="btnJoin">🔑 Войти по коду</button>
+      <button class="big-btn yellow hidden" id="btnResume">↩️ Вернуться в игру</button>
+      <button class="mid-btn" id="btnHow">❓ Как играть</button>
+    </div>
+    <div class="home-foot">
+      <div id="authorLine">Автор игры: Аниса</div>
+      <button class="link-btn" id="btnCreator">✏️ Для автора</button>
+    </div>
+  </section>
+
+  <!-- ПРОФИЛЬ -->
+  <section id="scrProfile" class="screen hidden">
+    <h2>Кто ты? 🙂</h2>
+    <label class="lbl" for="inpName">Твоё имя (можно прозвище)</label>
+    <input id="inpName" class="inp" maxlength="14" autocomplete="off" autocapitalize="words" placeholder="Например: Аиша">
+    <div class="lbl">Выбери героя</div>
+    <div id="avatarGrid" class="avatar-grid"></div>
+    <div class="hint">Мы не спрашиваем ничего, кроме имени и героя. Всё остаётся только в игре.</div>
+    <button class="big-btn green" id="btnProfileOk">Дальше ➜</button>
+  </section>
+
+  <!-- ВХОД ПО КОДУ -->
+  <section id="scrJoin" class="screen hidden">
+    <h2>Код комнаты 🔑</h2>
+    <p class="center">Спроси код у того, кто создал комнату.</p>
+    <input id="inpCode" class="inp code-inp" inputmode="numeric" pattern="[0-9]*" maxlength="6" autocomplete="off" placeholder="000000">
+    <div id="joinErr" class="err hidden"></div>
+    <button class="big-btn blue" id="btnJoinGo">Войти ➜</button>
+  </section>
+
+  <!-- ЛОББИ -->
+  <section id="scrLobby" class="screen hidden">
+    <div class="code-card">
+      <div class="small">Код комнаты</div>
+      <div id="lobbyCode" class="code-big">------</div>
+      <button class="mid-btn" id="btnShare">📤 Позвать родных</button>
+    </div>
+    <div id="lobbyWait" class="center small"></div>
+    <h3>Игроки <span id="lobbyCount"></span></h3>
+    <div id="lobbyPlayers" class="player-list"></div>
+    <div id="hostSettings" class="settings hidden">
+      <h3>Настройки ⚙️</h3>
+      <div class="set-row"><span>Кругов</span><div class="seg" data-set="rounds"><button data-v="2">2</button><button data-v="3">3</button><button data-v="4">4</button><button data-v="6">6</button><button data-v="8">8</button></div></div>
+      <div class="set-row"><span>Время на ответ</span><div class="seg" data-set="qTime"><button data-v="10">10с</button><button data-v="15">15с</button><button data-v="20">20с</button><button data-v="30">30с</button></div></div>
+      <div class="set-row"><span>Семейные вопросы <small id="famCount"></small></span><div class="seg" data-set="family"><button data-v="1">Да</button><button data-v="0">Нет</button></div></div>
+      <button class="big-btn green" id="btnStart">▶️ Начать игру</button>
+    </div>
+  </section>
+
+  <!-- ИГРА -->
+  <section id="scrGame" class="screen hidden">
+    <div id="gameInfo" class="game-info"><span id="roundLbl"></span><span id="lastLbl"></span></div>
+    <div id="mapWrap" class="map-wrap"><svg id="map" xmlns="http://www.w3.org/2000/svg"></svg></div>
+    <div id="scoreRow" class="score-row"></div>
+    <div id="turnBar" class="turn-bar"></div>
+    <div id="hostBar" class="host-bar hidden">
+      <button class="small-btn" id="btnSkip">⏭ Пропустить ход</button>
+      <button class="small-btn" id="btnEnd">🏁 Закончить игру</button>
+    </div>
+  </section>
+
+  <!-- ОВЕРЛЕИ -->
+  <div id="ovDice" class="overlay hidden"><div class="dice-box"><div id="dice" class="dice"></div><div id="diceWho" class="dice-who"></div></div></div>
+  <div id="ovEvent" class="overlay hidden"><div class="card pop"><div id="evEmoji" class="ev-emoji"></div><div id="evText" class="ev-text"></div></div></div>
+
+  <div id="ovQuiz" class="overlay quiz hidden">
+    <div class="quiz-card">
+      <div class="quiz-head"><span id="qCity"></span><button class="icon-btn" id="btnSpeak" aria-label="Прочитать вопрос">🔈</button></div>
+      <div id="qBadge" class="q-badge hidden"></div>
+      <div id="qEmoji" class="q-emoji"></div>
+      <div id="qText" class="q-text"></div>
+      <div class="timer"><div id="qTimer"></div><span id="qSec"></span></div>
+      <div id="qAnswers" class="answers"></div>
+      <div id="qStatus" class="q-status"></div>
+      <div id="qReveal" class="q-reveal hidden"></div>
+    </div>
+  </div>
+
+  <div id="ovEnd" class="overlay hidden">
+    <div class="card end-card">
+      <h2>🏆 Итоги путешествия</h2>
+      <div id="podium" class="podium"></div>
+      <div id="endList" class="end-list"></div>
+      <div class="stack">
+        <button class="big-btn green hidden" id="btnAgain">🔁 Играть ещё</button>
+        <button class="mid-btn" id="btnEndHome">🏠 На главную</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="ovModal" class="overlay hidden"><div class="card modal"><button class="close-x" id="modalClose" aria-label="Закрыть">✖</button><div id="modalBody"></div></div></div>
+  <div id="toast" class="toast hidden"></div>
+  <div id="rain" class="rain"></div>
+</div>
+<script type="module" src="js/app.js"></script>
+<noscript>Для игры нужен JavaScript.</noscript>
+</body>
+</html>
